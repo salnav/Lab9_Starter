@@ -174,10 +174,10 @@
             console.table(['console', 'table', 'message']);
             break;
           case 'Start Timer':
-            console.time('Timer Started');
+            console.time('Timer Button');
             break;
           case 'End Timer':
-            console.timeEnd('Timer Ended');
+            console.timeEnd('Timer Button');
             break;
           case 'Console Trace':
             function foo() {
@@ -193,11 +193,7 @@
             added = 5 + b;
             break;
           case 'Trigger a Custom Error':
-          try {
-              customerErrorTest();
-            } catch(err) {
-              console.error(err);
-            }
+            throw new CustomError("Custom Error Thrown");
             break;
         }
       });
