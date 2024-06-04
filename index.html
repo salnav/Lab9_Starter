@@ -47,6 +47,14 @@
       width: 122px;
     }
   </style>
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "af1301373f5645629755d0ad840ed7d4"
+    });
+  </script>
+                        
 </head>
 
 <body>
@@ -84,6 +92,7 @@
       <button>End Timer</button>
       <button>Console Trace</button>
       <button>Trigger a Global Error</button>
+      <button>Trigger a Custom Error</button>
     </section>
   </main>
 
@@ -95,12 +104,108 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      try {
+        if (!firstNum || !secondNum) {
+          throw new Error("Either input is not filled");
+        }
+        if (isNaN(firstNum) || isNaN(secondNum)) {
+          throw new Error("Either input is not a number");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        console.log("Calulation processed");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
+
+    class CustomError extends Error {
+      constructor(message) {
+        super(message)
+        this.name = "CustomError"; 
+      }
+    }
+
+    function customerErrorTest() {
+      throw new CustomError("Custom Error Thrown");
+    }
+
+
+    errorBtns.forEach(btn => {
+      btn.addEventListener('click', event => {
+        let text = event.target.innerHTML;
+        switch (text) {
+          case 'Console Log':
+            console.log('Console Log Demo');
+            break;
+          case 'Console Error':
+            console.error('Console Error Demo');
+            break;
+          case 'Console Count':
+            console.count('Count Button');
+            break;
+          case 'Console Warn':
+            console.warn('Console Warn Button');
+            break;
+          case 'Console Assert':
+            console.assert(2 === 3, "Assertion is false");
+            break;
+          case 'Console Clear':
+            console.clear();
+            break;
+          case 'Console Dir':
+            console.dir(document);
+            break;
+          case 'Console dirxml':
+            console.dirxml(document);
+            break;
+          case 'Console Group Start':
+            console.group('Group Start');
+            break;
+          case 'Console Group End':
+            console.groupEnd();
+            break;
+          case 'Console Table':
+            console.table(['console', 'table', 'message']);
+            break;
+          case 'Start Timer':
+            console.time('Timer Started');
+            break;
+          case 'End Timer':
+            console.timeEnd('Timer Ended');
+            break;
+          case 'Console Trace':
+            function foo() {
+              function bar() {
+                console.trace();
+              }
+              bar();
+            }
+            foo();
+            break;
+          case 'Trigger a Global Error':
+            a = 5;
+            added = 5 + b;
+            break;
+          case 'Trigger a Custom Error':
+          try {
+              customerErrorTest();
+            } catch(err) {
+              console.error(err);
+            }
+            break;
+        }
+      });
+    });
+
+    window.onerror = function(event, source, lineno, colno, error) {
+      console.log('Sadly, an error occurred my friend');
+    };
     // You may move this JS to another file if you wish
   </script>
 </body>
